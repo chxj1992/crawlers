@@ -19,7 +19,7 @@ def worker(i, step):
         i += step
         print 'page ' + str(i)
     print("worker : " + str(i) + " end.")
-    exit()
+    return True
 
 
 for i in range(0, WORKER_NUM):
