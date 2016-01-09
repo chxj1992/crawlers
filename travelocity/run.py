@@ -22,6 +22,8 @@ def worker(i, step):
     return True
 
 
-for i in range(0, WORKER_NUM):
-    p = Process(target=worker, args=(i, WORKER_NUM,))
-    p.start()
+if __name__ == "__main__":
+
+    for i in range(0, WORKER_NUM):
+        p = Process(target=worker, args=(i, WORKER_NUM,))
+        p.start()
