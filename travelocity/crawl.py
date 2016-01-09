@@ -29,6 +29,8 @@ class Crawl:
         for cruiseCard in cruiseCards :
             self.getDetailPage(cruiseCard)
 
+        return True
+
 
     def buildCruiseTitle(self, cruiseCard):
         title = str(cruiseCard['duration'])+ '-night ' + cruiseCard['destination'] +' Cruise from ' + cruiseCard['startPort']
