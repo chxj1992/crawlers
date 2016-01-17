@@ -2,7 +2,7 @@ from multiprocessing import Process
 
 import crawl
 
-WORKER_NUM = 20
+WORKER_NUM = 10
 
 c = crawl.Crawl()
 
