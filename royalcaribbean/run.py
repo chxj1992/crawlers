@@ -17,6 +17,7 @@ def worker(i, step):
             print "error : " + e.message 
             continue
         print 'page : ' + str(i)
+        i += step
     print("worker : " + str(i) + " end.")
     return True
 
