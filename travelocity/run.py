@@ -16,8 +16,8 @@ def worker(i, step):
         try:
             if not c.getListPage(i):
                 break
-        except:
-            print("url error caught!")
+        except Exception as e:
+            print "error : " + e.message
             retry += 1
             if retry < RETRY_MAX:
                 print 'retry : ' + str(retry)
