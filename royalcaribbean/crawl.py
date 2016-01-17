@@ -1,6 +1,7 @@
 # encoding=utf-8
 import json
 import re
+import sys
 import time
 import urllib2
 
@@ -17,7 +18,7 @@ class Crawl:
             'Accept': 'text/html;q=0.9,*/*;q=0.8',
             'Accept-Charset': 'utf-8,gbk;q=0.7,*;q=0.3',
             'Connection': 'close',
-            'Cookie': open("cookie.txt").read().strip(),
+            'Cookie': open(sys.path[0] + "/cookie.txt").read().strip(),
             'Referer': self.host
         }
 
