@@ -3,7 +3,7 @@ import MySQLdb
 
 def save(data):
     sql = 'REPLACE INTO cruises(`from`, itinerary_id, title, ship_name, duration, departure_port, departure_time, \
-            inside, oceanview, balcony, suite, is_lowest_price) VALUES ' + ','.join(data)
+            inside, oceanview, balcony, suite) VALUES ' + ','.join(data)
     execute(sql)
 
 
