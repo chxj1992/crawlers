@@ -43,9 +43,6 @@ class Crawl:
             cruise['duration'] = re.compile(r'^\d+').findall(cruise['title'])[0]
             cruise['departure_port'] = row.find(class_="cruise-details").find("strong").get_text(strip=True).split(
                     ",").pop(0)
-            departureTimeStr = row.find(class_="cruise-details").find(class_="sail-date").get_text(strip=True).replace(
-                    ';', '')
-            cruise['departure_time'] = int(time.mktime(time.strptime(departureTimeStr, "%b %d, %Y")))
 
             detailUrl = self.host + '/cruise/inlinepricing/' + row.find(class_="cruise-detail-link cta-link").get(
                     "href").split("/").pop()
@@ -61,6 +58,7 @@ class Crawl:
         data = []
         pricePattern = re.compile(r'^\$(\d+)')
         for row in res['inlinePricing']['rows']:
+            departureTime = int(time.mktime(time.strptime(row['dateLabel'], "%a - %d %b %Y")))
             inside = 0 if (row['priceItems'][0]['price'] is None) else \
                 pricePattern.findall(row['priceItems'][0]['price'])[0]
             oceanview = 0 if (row['priceItems'][1]['price'] is None) else \
@@ -76,7 +74,7 @@ class Crawl:
                         "', '" + cruise['ship_name'] + \
                         "', '" + str(cruise['duration']) + \
                         "', '" + cruise['departure_port'] + \
-                        "', FROM_UNIXTIME(" + str(cruise['departure_time']) + \
+                        "', FROM_UNIXTIME(" + str(departureTime) + \
                         "), '" + str(inside) + \
                         "', '" + str(oceanview) + \
                         "', '" + str(balcony) + \
