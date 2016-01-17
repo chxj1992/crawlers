@@ -60,13 +60,13 @@ class Crawl:
         for row in res['inlinePricing']['rows']:
             departureTime = int(time.mktime(time.strptime(row['dateLabel'], "%a - %d %b %Y")))
             inside = 0 if (row['priceItems'][0]['price'] is None) else \
-                pricePattern.findall(row['priceItems'][0]['price'])[0]
+                pricePattern.findall(row['priceItems'][0]['price'].replace(',', ''))[0]
             oceanview = 0 if (row['priceItems'][1]['price'] is None) else \
-                pricePattern.findall(row['priceItems'][1]['price'])[0]
+                pricePattern.findall(row['priceItems'][1]['price'].replace(',', ''))[0]
             balcony = 0 if (row['priceItems'][2]['price'] is None) else \
-                pricePattern.findall(row['priceItems'][2]['price'])[0]
+                pricePattern.findall(row['priceItems'][2]['price'].replace(',', ''))[0]
             suite = 0 if (row['priceItems'][3]['price'] is None) else \
-                pricePattern.findall(row['priceItems'][3]['price'])[0]
+                pricePattern.findall(row['priceItems'][3]['price'].replace(',', ''))[0]
 
             data.append("('royalcaribbean', '" + \
                         str(res['packageId']) + \
