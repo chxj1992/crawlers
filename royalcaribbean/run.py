@@ -14,7 +14,7 @@ def worker(i, step):
             if not c.getListPage(i):
                 break
         except Exception as e:
-            print "error : " + e.message 
+            print "error : " + str(e)
             continue
         print 'page : ' + str(i)
         i += step
