@@ -11,7 +11,8 @@ def save(data):
 
 def execute(sql):
     try:
-        conn = MySQLdb.connect(host='localhost', user='root', passwd='87822971', db='apples_data_center', port=3306)
+        conn = MySQLdb.connect(host='localhost', user='root', passwd='87822971', db='apples_data_center', port=3306,
+                               use_unicode=True, charset="utf8")
         cur = conn.cursor()
         res = cur.execute(sql)
         conn.commit()
