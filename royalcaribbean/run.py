@@ -3,27 +3,20 @@ from multiprocessing import Process
 import crawl
 
 WORKER_NUM = 10
-RETRY_MAX = 10
 
 c = crawl.Crawl()
 
 
 def worker(i, step):
     print("worker : " + str(i) + " start ...")
-    retry = 0
     while True:
         try:
             if not c.getListPage(i):
                 break
         except Exception as e:
             print "error : " + e.message 
-            retry += 1
-            if retry < RETRY_MAX:
-                print 'retry : ' + str(retry)
-                continue
-        i += step
-        retry = 0
-        print 'page ' + str(i)
+            continue
+        print 'page : ' + str(i)
     print("worker : " + str(i) + " end.")
     return True
 
