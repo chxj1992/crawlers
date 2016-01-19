@@ -1,7 +1,8 @@
 # coding=utf-8
 from bs4 import BeautifulSoup
-import re
-import db
+
+from cruise.carnival import db
+
 
 def parse(table, dataTime):
     soup = BeautifulSoup(table)
