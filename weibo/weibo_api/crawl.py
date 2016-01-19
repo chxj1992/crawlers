@@ -1,9 +1,9 @@
 # encoding=utf-8
-import urllib2
-import urllib
-import re
 import json
+import urllib2
+
 import db
+
 
 class Crawl:
 
