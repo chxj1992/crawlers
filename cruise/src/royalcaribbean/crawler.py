@@ -1,17 +1,16 @@
 # encoding=utf-8
 
-import json
 import re
 import sys
 import time
-import urllib2
 
+import requests
 from bs4 import BeautifulSoup
 
-import db
+from .. import db
 
 
-class Crawl:
+class Crawler:
     def __init__(self):
         self.host = "http://www.royalcaribbean.com/ajax"
         self.headers = {
@@ -19,54 +18,51 @@ class Crawl:
             'Accept': 'text/html;q=0.9,*/*;q=0.8',
             'Accept-Charset': 'utf-8,gbk;q=0.7,*;q=0.3',
             'Connection': 'close',
-            'Cookie': open(sys.path[0] + "/cookie.txt").read().strip(),
+            'Cookie': open(sys.path[0] + "/src/royalcaribbean/cookie.txt").read().strip(),
             'Referer': self.host
         }
 
-    def getListPage(self, page):
+    def run(self, page):
         url = self.host + '/cruises/searchbody?action=update&currentPage=' + str(page)
-        req = urllib2.Request(url, headers=self.headers)
-        content = urllib2.urlopen(req).read()
+        content = requests.get(url, headers=self.headers).text
 
         soup = BeautifulSoup(content, 'lxml')
         results = soup.find_all("div", class_="search-result")
 
-        if (len(results) == 0):
+        if len(results) == 0:
             return False
 
         for row in results:
             cruise = {}
-
-            titleElem = row.find(class_="search-result-top").find("h3").get_text(strip=True)
-            cruise['title'] = re.compile(r'(\d.*)').findall(titleElem)[0]
+            title_elem = row.find(class_="search-result-top").find("h3").get_text(strip=True)
+            cruise['title'] = re.compile(r'(\d.*)').findall(title_elem)[0]
             cruise['ship_name'] = row.find(class_="cruise-ship").find("strong").get_text(strip=True)
             cruise['duration'] = re.compile(r'^\d+').findall(cruise['title'])[0]
             cruise['departure_port'] = row.find(class_="cruise-details").find("strong").get_text(strip=True).split(
                     ",").pop(0)
 
-            detailUrl = self.host + '/cruise/inlinepricing/' + row.find(class_="cruise-detail-link cta-link").get(
+            detail_url = self.host + '/cruise/inlinepricing/' + row.find(class_="cruise-detail-link cta-link").get(
                     "href").split("/").pop()
 
-            self.getDetailPage(detailUrl, cruise)
+            self.get_detail(detail_url, cruise)
 
         return True
 
-    def getDetailPage(self, url, cruise):
-        req = urllib2.Request(url, headers=self.headers)
-        res = json.loads(urllib2.urlopen(req).read())
+    def get_detail(self, url, cruise):
+        res = requests.get(url, headers=self.headers).json()
 
         data = []
-        pricePattern = re.compile(r'^\$(\d+)')
+        price_pattern = re.compile(r'^\$(\d+)')
         for row in res['inlinePricing']['rows']:
-            departureTime = int(time.mktime(time.strptime(row['dateLabel'], "%a - %d %b %Y")))
+            departure_time = int(time.mktime(time.strptime(row['dateLabel'], "%a - %d %b %Y")))
             inside = 0 if (row['priceItems'][0]['price'] is None) else \
-                pricePattern.findall(row['priceItems'][0]['price'].replace(',', ''))[0]
-            oceanview = 0 if (row['priceItems'][1]['price'] is None) else \
-                pricePattern.findall(row['priceItems'][1]['price'].replace(',', ''))[0]
+                price_pattern.findall(row['priceItems'][0]['price'].replace(',', ''))[0]
+            ocean_view = 0 if (row['priceItems'][1]['price'] is None) else \
+                price_pattern.findall(row['priceItems'][1]['price'].replace(',', ''))[0]
             balcony = 0 if (row['priceItems'][2]['price'] is None) else \
-                pricePattern.findall(row['priceItems'][2]['price'].replace(',', ''))[0]
+                price_pattern.findall(row['priceItems'][2]['price'].replace(',', ''))[0]
             suite = 0 if (row['priceItems'][3]['price'] is None) else \
-                pricePattern.findall(row['priceItems'][3]['price'].replace(',', ''))[0]
+                price_pattern.findall(row['priceItems'][3]['price'].replace(',', ''))[0]
 
             data.append("('royalcaribbean', '" + \
                         str(res['packageId']) + \
@@ -74,11 +70,12 @@ class Crawl:
                         "', '" + cruise['ship_name'] + \
                         "', '" + str(cruise['duration']) + \
                         "', '" + cruise['departure_port'] + \
-                        "', FROM_UNIXTIME(" + str(departureTime) + \
+                        "', FROM_UNIXTIME(" + str(departure_time) + \
                         "), '" + str(inside) + \
-                        "', '" + str(oceanview) + \
+                        "', '" + str(ocean_view) + \
                         "', '" + str(balcony) + \
                         "', '" + str(suite) + \
+                        "', '" + str(0) + \
                         "')")
 
         db.save(data)

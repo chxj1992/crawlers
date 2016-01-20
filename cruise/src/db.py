@@ -5,7 +5,7 @@ import MySQLdb
 
 def save(data):
     sql = 'REPLACE INTO cruises(project, itinerary_id, title, ship_name, duration, departure_port, departure_time, \
-            inside, oceanview, balcony, suite) VALUES ' + ','.join(data)
+            inside, oceanview, balcony, suite, is_lowest_price) VALUES ' + ','.join(data)
     execute(sql)
 
 
@@ -14,7 +14,7 @@ def execute(sql):
         conn = MySQLdb.connect(host='localhost', user='root', passwd='87822971', db='apples_data_center', port=3306,
                                use_unicode=True, charset="utf8")
         cur = conn.cursor()
-        res = cur.execute(sql)
+        cur.execute(sql)
         conn.commit()
         cur.close()
         conn.close()

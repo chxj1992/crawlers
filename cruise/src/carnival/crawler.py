@@ -1,14 +1,14 @@
 # encoding=utf-8
 
-import json
 import re
 import time
-import urllib2
 
-import db
+import requests
+
+from .. import db
 
 
-class Crawl:
+class Crawler:
     def __init__(self):
         self.host = "http://www.carnival.com/BookingEngine/SailingSearch/"
         self.headers = {
@@ -19,33 +19,32 @@ class Crawl:
             'Referer': self.host
         }
 
-    def getListPage(self, page):
+    def run(self, page):
         url = self.host + 'Get?pageSize=100&pageNumber=' + str(page)
-        req = urllib2.Request(url, headers=self.headers)
-        res = json.loads(urllib2.urlopen(req).read())
+        res = requests.get(url, headers=self.headers).json()
 
         if len(res['Itineraries']) == 0:
             return False
 
         for itinerary in res['Itineraries']:
-            self.saveItinerary(itinerary)
+            self.save_itinerary(itinerary)
 
         return True
 
-    def saveItinerary(self, itinerary):
-
+    @staticmethod
+    def save_itinerary(itinerary):
         data = []
-        pricePattern = re.compile(r'^\$(\d+)')
+        price_pattern = re.compile(r'^\$(\d+)')
         for sailing in itinerary['Sailings']:
-            departureTime = int(time.mktime(time.strptime(sailing['SailDateMMddyyyyInv'], "%m%d%Y")))
-            inside = 0 if len(pricePattern.findall(sailing['INPriceText'])) == 0 else \
-                pricePattern.findall(sailing['INPriceText'].replace(',', ''))[0]
-            oceanView = 0 if len(pricePattern.findall(sailing['OVPriceText'])) == 0 else \
-                pricePattern.findall(sailing['OVPriceText'].replace(',', ''))[0]
-            balcony = 0 if len(pricePattern.findall(sailing['BAPriceText'])) == 0 else \
-                pricePattern.findall(sailing['BAPriceText'].replace(',', ''))[0]
-            suite = 0 if len(pricePattern.findall(sailing['STPriceText'])) == 0 else \
-                pricePattern.findall(sailing['STPriceText'].replace(',', ''))[0]
+            departure_time = int(time.mktime(time.strptime(sailing['SailDateMMddyyyyInv'], "%m%d%Y")))
+            inside = 0 if len(price_pattern.findall(sailing['INPriceText'])) == 0 else \
+                price_pattern.findall(sailing['INPriceText'].replace(',', ''))[0]
+            ocean_view = 0 if len(price_pattern.findall(sailing['OVPriceText'])) == 0 else \
+                price_pattern.findall(sailing['OVPriceText'].replace(',', ''))[0]
+            balcony = 0 if len(price_pattern.findall(sailing['BAPriceText'])) == 0 else \
+                price_pattern.findall(sailing['BAPriceText'].replace(',', ''))[0]
+            suite = 0 if len(price_pattern.findall(sailing['STPriceText'])) == 0 else \
+                price_pattern.findall(sailing['STPriceText'].replace(',', ''))[0]
 
             data.append("('carnival', '" + \
                         str(itinerary['ItineraryCode']) + \
@@ -53,9 +52,9 @@ class Crawl:
                         "', '" + itinerary['ShipText'] + \
                         "', '" + str(itinerary['DurationDays']) + \
                         "', '" + itinerary['PortList'][0] + \
-                        "', FROM_UNIXTIME(" + str(departureTime) + \
+                        "', FROM_UNIXTIME(" + str(departure_time) + \
                         "), '" + str(inside) + \
-                        "', '" + str(oceanView) + \
+                        "', '" + str(ocean_view) + \
                         "', '" + str(balcony) + \
                         "', '" + str(suite) + \
                         "', '" + str(int(sailing['LowestPrice'])) + \
