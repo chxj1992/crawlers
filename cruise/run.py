@@ -10,7 +10,7 @@ from multiprocessing import Process
 
 def usage():
     print '==========================================='
-    print 'example: python crawler.py -p travelocity -n 10'
+    print 'example: python crawler.py -p travelocity -n 10\n'
     print '--help (-h) : show help'
     print '--project (-p) : project name'
     print '--number (-n) : worker number'
