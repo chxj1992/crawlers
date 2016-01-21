@@ -99,7 +99,7 @@ class Crawler:
                         "', '" + str(row['suite']) + \
                         "', '" + str(0) + \
                         "')")
+            print row['title'] + ' Done! '
 
         db.save(data)
-        print ' Done! '
         return False
