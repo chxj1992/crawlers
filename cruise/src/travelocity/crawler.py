@@ -67,17 +67,17 @@ class Crawler:
                 for sailing_date in sailing_month['sailingDates']:
                     departure_time = int(sailing_date['departureTimeInMillis'] / 1000)
                     data.append("('travelocity', '" + \
-                                str(cruise_card['itineraryId']) + \
-                                "', '" + title + \
-                                "', '" + cruise_card['shipName'] + \
-                                "', '" + str(cruise_card['duration']) + \
-                                "', '" + cruise_card['startPort'] + \
-                                "', FROM_UNIXTIME(" + str(departure_time) + \
-                                "), '" + str(sailing_date['insideCabinPrice']) + \
-                                "', '" + str(sailing_date['oceanViewCabinPrice']) + \
-                                "', '" + str(sailing_date['balconyCabinPrice']) + \
-                                "', '" + str(sailing_date['suiteCabinPrice']) + \
-                                "', '" + str(int(sailing_date['isLowestPrice'])) + \
+                                str(cruise_card['itineraryId']).encode('utf8') + \
+                                "', '" + title.encode('utf8') + \
+                                "', '" + cruise_card['shipName'].encode('utf8') + \
+                                "', '" + str(cruise_card['duration']).encode('utf8') + \
+                                "', '" + cruise_card['startPort'].encode('utf8') + \
+                                "', FROM_UNIXTIME(" + str(departure_time).encode('utf8') + \
+                                "), '" + str(sailing_date['insideCabinPrice']).encode('utf8') + \
+                                "', '" + str(sailing_date['oceanViewCabinPrice']).encode('utf8') + \
+                                "', '" + str(sailing_date['balconyCabinPrice']).encode('utf8') + \
+                                "', '" + str(sailing_date['suiteCabinPrice']).encode('utf8') + \
+                                "', '" + str(int(sailing_date['isLowestPrice'])).encode('utf8') + \
                                 "')")
 
         db.save(data)

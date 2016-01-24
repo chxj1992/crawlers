@@ -65,16 +65,16 @@ class Crawler:
                 price_pattern.findall(row['priceItems'][3]['price'].replace(',', ''))[0]
 
             data.append("('royalcaribbean', '" + \
-                        str(res['packageId']) + \
-                        "', '" + cruise['title'] + \
-                        "', '" + cruise['ship_name'] + \
-                        "', '" + str(cruise['duration']) + \
-                        "', '" + cruise['departure_port'] + \
-                        "', FROM_UNIXTIME(" + str(departure_time) + \
-                        "), '" + str(inside) + \
-                        "', '" + str(ocean_view) + \
-                        "', '" + str(balcony) + \
-                        "', '" + str(suite) + \
+                        str(res['packageId']).encode('utf8') + \
+                        "', '" + cruise['title'].encode('utf8') + \
+                        "', '" + cruise['ship_name'].encode('utf8') + \
+                        "', '" + str(cruise['duration']).encode('utf8') + \
+                        "', '" + cruise['departure_port'].encode('utf8') + \
+                        "', FROM_UNIXTIME(" + str(departure_time).encode('utf8') + \
+                        "), '" + str(inside).encode('utf8') + \
+                        "', '" + str(ocean_view).encode('utf8') + \
+                        "', '" + str(balcony).encode('utf8') + \
+                        "', '" + str(suite).encode('utf8') + \
                         "', '" + str(0) + \
                         "')")
 

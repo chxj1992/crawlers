@@ -47,17 +47,17 @@ class Crawler:
                 price_pattern.findall(sailing['STPriceText'].replace(',', ''))[0]
 
             data.append("('carnival', '" + \
-                        str(itinerary['ItineraryCode']) + \
-                        "', '" + itinerary['ItnDescriptionText'] + \
-                        "', '" + itinerary['ShipText'] + \
-                        "', '" + str(itinerary['DurationDays']) + \
-                        "', '" + itinerary['PortList'][0] + \
-                        "', FROM_UNIXTIME(" + str(departure_time) + \
-                        "), '" + str(inside) + \
-                        "', '" + str(ocean_view) + \
-                        "', '" + str(balcony) + \
-                        "', '" + str(suite) + \
-                        "', '" + str(int(sailing['LowestPrice'])) + \
+                        str(itinerary['ItineraryCode']).encode('utf8') + \
+                        "', '" + itinerary['ItnDescriptionText'].encode('utf8') + \
+                        "', '" + itinerary['ShipText'].encode('utf8') + \
+                        "', '" + str(itinerary['DurationDays']).encode('utf8') + \
+                        "', '" + itinerary['PortList'][0].encode('utf8') + \
+                        "', FROM_UNIXTIME(" + str(departure_time).encode('utf8') + \
+                        "), '" + str(inside).encode('utf8') + \
+                        "', '" + str(ocean_view).encode('utf8') + \
+                        "', '" + str(balcony).encode('utf8') + \
+                        "', '" + str(suite).encode('utf8') + \
+                        "', '" + str(int(sailing['LowestPrice'])).encode('utf8') + \
                         "')")
 
         db.save(data)
