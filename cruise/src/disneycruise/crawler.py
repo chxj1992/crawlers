@@ -87,19 +87,19 @@ class Crawler:
         for sailing_id in sailings:
             row = build_row(sailings[sailing_id], cruise_sailings)
             data.append("('disneycruise', '" + \
-                        row['itinerary_id'].encode('utf8') + \
-                        "', '" + row['title'].encode('utf8') + \
-                        "', '" + row['ship_name'].encode('utf8') + \
-                        "', '" + str(row['duration']).encode('utf8') + \
-                        "', '" + row['departure_port'].encode('utf8') + \
-                        "', FROM_UNIXTIME(" + str(row['departure_time']).encode('utf8') + \
-                        "), '" + str(row['inside']).encode('utf8') + \
-                        "', '" + str(row['oceanview']).encode('utf8') + \
-                        "', '" + str(row['balcony']).encode('utf8') + \
-                        "', '" + str(row['suite']).encode('utf8') + \
+                        row['itinerary_id'] + \
+                        "', '" + row['title'] + \
+                        "', '" + row['ship_name'] + \
+                        "', '" + str(row['duration'])+ \
+                        "', '" + row['departure_port'] + \
+                        "', FROM_UNIXTIME(" + str(row['departure_time'])+ \
+                        "), '" + str(row['inside']) + \
+                        "', '" + str(row['oceanview']) + \
+                        "', '" + str(row['balcony']) + \
+                        "', '" + str(row['suite']) + \
                         "', '" + str(0) + \
                         "')")
-            print row['title'] + ' Done! '
+            print row['title'].encode('utf-8') + ' Done! '
 
         db.save(data)
         return False
