@@ -1,4 +1,5 @@
-# encoding=utf-8
+# -*- coding: utf-8 -*-
+
 import time
 
 from selenium import webdriver
