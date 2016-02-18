@@ -7,18 +7,18 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-driver = webdriver.Chrome()
+driver = webdriver.PhantomJS()
 wait = WebDriverWait(driver, 30)
 
 
-def wait_next_page_btn():
+def wait_page_btn():
     return wait.until(
-            EC.element_to_be_clickable((By.ID, 'mainContent_fycResults_rptPagination_btnPageNext')))
+            EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, '4')))
 
 
 def click_next():
     time.sleep(5)
-    wait_next_page_btn().click()
+    wait_page_btn().click()
     time.sleep(5)
 
 
@@ -31,7 +31,7 @@ class Crawler:
         driver.get('https://www.msccruisesusa.com/en-us/Plan-Book/Find-Cruise.aspx')
 
         while True:
-            wait_next_page_btn()
+            wait_page_btn()
 
             items = driver.find_elements_by_class_name('divItin')
             print len(items)
@@ -45,7 +45,7 @@ class Crawler:
 
                 for i in range(1, len(months)):
                     months[i].click()
-                    wait_next_page_btn()
+                    wait_page_btn()
                     self.get_cruise(item)
 
             click_next()
