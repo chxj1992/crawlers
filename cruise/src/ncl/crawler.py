@@ -6,7 +6,7 @@ import time
 import requests
 from bs4 import BeautifulSoup
 
-from cruise.src import db
+from .. import db
 
 
 def match_price(row, index):
@@ -33,12 +33,11 @@ class Crawler:
             'Accept': 'text/html;q=0.9,*/*;q=0.8',
             'Accept-Charset': 'utf-8,gbk;q=0.7,*;q=0.3',
             'Connection': 'close',
-            # 'Cookie': open(sys.path[0] + "/src/royalcaribbean/cookie.txt").read().strip(),
             'Referer': self.host
         }
 
     def run(self, page):
-        url = self.host + '?pageSize=100&currentPage=' + str(page)
+        url = self.host + '?pageSize=20&currentPage=' + str(page)
         content = requests.get(url, headers=self.headers).text
 
         soup = BeautifulSoup(content, 'lxml')
@@ -51,7 +50,8 @@ class Crawler:
             cruise = {}
             cruise['title'] = row.find(class_="titledetails").get_text(strip=True)
             cruise['ship_name'] = row.find(class_="shipname").find("strong").get_text(strip=True)
-            cruise['duration'] = re.compile(r'^\d+').findall(cruise['title'])[0]
+            duration_match = re.compile(r'^\d+').findall(cruise['title'])
+            cruise['duration'] = 0 if len(duration_match) is 0 else duration_match[0]
             cruise['departure_port'] = row.find(class_="ports").find("strong").get_text(strip=True)
             cruise['itinerary_id'] = row.find(attrs={"name": "itineraryCode"}).get("value")
 
@@ -64,7 +64,7 @@ class Crawler:
         content = requests.get(url, headers=self.headers).text
         soup = BeautifulSoup(content, 'lxml')
         results = soup.find_all("ul", class_="resetgrid")
-        print url
+
         data = []
         for row in results:
             studio = match_price(row, "STUDIO")

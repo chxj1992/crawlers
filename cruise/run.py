@@ -11,7 +11,7 @@ from multiprocessing import Process
 
 def usage():
     print '==========================================='
-    print 'example: python crawler.py -p travelocity -n 10\n'
+    print 'example: python run.py -p travelocity -n 10\n'
     print '--help (-h) : show help'
     print '--project (-p) : project name'
     print '--number (-n) : worker number'
@@ -46,15 +46,16 @@ c = m.Crawler()
 
 def worker(i, step):
     print("worker : " + str(i) + " start ...")
+    page = i
     while True:
         try:
-            if not c.run(i):
+            if not c.run(page):
                 break
         except Exception as e:
             print "error : " + str(e)
             continue
-        print 'page : ' + str(i)
-        i += step
+        print 'page : ' + str(page)
+        page += step
     print("worker : " + str(i) + " end.")
     return True
 
