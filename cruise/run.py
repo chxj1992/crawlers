@@ -54,7 +54,7 @@ def worker(i, step):
         except Exception as e:
             print "error : " + str(e)
             continue
-        print 'page : ' + str(page)
+        print 'page : ' + str(page) + " finished"
         page += step
     print("worker : " + str(i) + " end.")
     return True
