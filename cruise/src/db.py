@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 
 import MySQLdb
 
@@ -10,8 +11,12 @@ def save(data):
 
 
 def execute(sql):
+    host = os.environ.get("DB_HOST")
+    user = os.environ.get("DB_USER")
+    password = os.environ.get("DB_PASS")
+    port = int(os.environ.get("DB_PORT"))
     try:
-        conn = MySQLdb.connect(host='localhost', user='root', passwd='87822971', db='apples_data_center', port=3306,
+        conn = MySQLdb.connect(host=host, user=user, passwd=password, db='apples_data_center', port=port,
                                use_unicode=True, charset="utf8")
         cur = conn.cursor()
         cur.execute(sql)

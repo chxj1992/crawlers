@@ -8,6 +8,9 @@ import sys
 
 from multiprocessing import Process
 
+from os.path import join, dirname
+from dotenv import load_dotenv
+
 
 def usage():
     print '==========================================='
@@ -61,6 +64,8 @@ def worker(i, step):
 
 
 if __name__ == "__main__":
+    dotenv_path = join(dirname(__file__), '.env')
+    load_dotenv(dotenv_path)
     for i in range(0, worker_number):
         p = Process(target=worker, args=(i + 1, worker_number,))
         p.start()
