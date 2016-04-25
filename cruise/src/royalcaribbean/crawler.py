@@ -14,17 +14,13 @@ class Crawler:
     def __init__(self):
         self.host = "http://www.royalcaribbean.com/ajax"
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36',
-            'Accept': 'text/html;q=0.9,*/*;q=0.8',
-            'Accept-Charset': 'utf-8,gbk;q=0.7,*;q=0.3',
-            'Connection': 'keep-alive',
-            'Cookie': open(sys.path[0] + "/src/royalcaribbean/cookie.txt").read().strip(),
-            'Referer': self.host
+            'Cookie': open(sys.path[0] + "/src/royalcaribbean/cookie.txt").read().strip()
         }
 
     def run(self, page):
         url = self.host + '/cruises/searchbody?action=update&currentPage=' + str(page-1)
         content = requests.get(url, headers=self.headers).text
+
         soup = BeautifulSoup(content, 'lxml')
         results = soup.find_all("div", class_="search-result")
 
