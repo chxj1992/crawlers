@@ -35,10 +35,13 @@ class Crawler:
             'Connection': 'close',
             'Referer': self.host
         }
+        self.proxies = {
+            'https': 'https://117.131.216.214:8080'
+        }
 
     def run(self, page):
         url = self.host + '?pageSize=20&currentPage=' + str(page)
-        content = requests.get(url, headers=self.headers).text
+        content = requests.get(url, headers=self.headers, proxies=self.proxies).text
 
         soup = BeautifulSoup(content, 'lxml')
         results = soup.find_all("section", class_="tripdetails")
@@ -61,7 +64,7 @@ class Crawler:
         return True
 
     def get_detail(self, url, cruise):
-        content = requests.get(url, headers=self.headers).text
+        content = requests.get(url, headers=self.headers, proxies=self.proxies).text
         soup = BeautifulSoup(content, 'lxml')
         results = soup.find_all("ul", class_="resetgrid")
 
