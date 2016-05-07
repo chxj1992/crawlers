@@ -133,7 +133,7 @@ def run():
     online_id = '780aa9a6ec0a489bb0e78588cb6d5cbd'
 
     for i in range(1, 6):
-        print 'worker ' + str(i) + ' start'
+        print 'worker ' + str(i) + ' start ...'
         p = Process(target=order_without_area, args=(cookie, show_id, online_id, phone, address, name, ticket_number))
         p.start()
 
