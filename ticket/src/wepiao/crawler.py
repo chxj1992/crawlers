@@ -128,7 +128,7 @@ def run():
     phone = '15669207848'
     address = '华西坝大学路12号'
     name = '陈先生'
-    ticket_number = 4
+    ticket_number = 2
     show_id = '14569213092998589'
     online_id = '780aa9a6ec0a489bb0e78588cb6d5cbd'
 
