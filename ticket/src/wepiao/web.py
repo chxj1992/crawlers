@@ -1,11 +1,12 @@
 # coding=utf-8
+import sys
 from flask import Flask, request
 
 import crawler
 
 app = Flask(__name__)
 
-default_cookie = 'YII_CSRF_TOKEN=abc37742d27467d5a0d437d4ef8f930d4269e1cb; cid_a1=10015925560998303; cid_1=14569213092998589; x-form=; WEPIAOTOKEN=69a70534ed0afda37c123715dcf175ba; _gat=1; WEPIAO=vg64pjcq48vif1odqp5otlcv55; onlineId=c75868491b564bd49b2bdb8e513d67be; _ga=GA1.2.1046576095.1462440033'
+default_cookie = cookie = open(sys.path[0] + "/cookie.txt").read().strip()
 default_phone = '15669207848'
 default_address = '华西坝大学路12号'
 default_name = '陈先生'
