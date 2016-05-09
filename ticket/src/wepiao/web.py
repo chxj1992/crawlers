@@ -27,23 +27,23 @@ def hello():
     return "Hello World!"
 
 
-@app.route("/with-area")
-def order_with_area():
+@app.route("/with-seats")
+def order_with_seats():
     show_id = request.args.get('show_id', '10015925560998303')
     online_id = request.args.get('online_id', 'c75868491b564bd49b2bdb8e513d67be')
     area_id = request.args.get('area_id', '10056561761863882')
     values = get_values()
 
-    return crawler.order_with_area(values[0], show_id, online_id, area_id, values[1], values[2], values[3], values[4])
+    return crawler.order_with_seats(values[0], show_id, online_id, area_id, values[1], values[2], values[3], values[4])
 
 
-@app.route("/without-area")
-def order_without_area():
+@app.route("/without-seats")
+def order_without_seats():
     show_id = request.args.get('show_id', '14569213092998589')
     online_id = request.args.get('online_id', '780aa9a6ec0a489bb0e78588cb6d5cbd')
     values = get_values()
 
-    return crawler.order_without_area(values[0], show_id, online_id, values[1], values[2], values[3], values[4])
+    return crawler.order_without_seats(values[0], show_id, online_id, values[1], values[2], values[3], values[4])
 
 
 if __name__ == "__main__":

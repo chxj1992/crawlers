@@ -6,7 +6,7 @@ import re
 import requests
 
 
-def order_with_area(cookie, show_id, online_id, area_id, phone, address, name, num):
+def order_with_seats(cookie, show_id, online_id, area_id, phone, address, name, num):
     try:
         c = Crawler(cookie, show_id, online_id, area_id)
 
@@ -19,7 +19,7 @@ def order_with_area(cookie, show_id, online_id, area_id, phone, address, name, n
         return 'failed!'
 
 
-def order_without_area(cookie, show_id, online_id, phone, address, name, num):
+def order_without_seats(cookie, show_id, online_id, phone, address, name, num):
     try:
         c = Crawler(cookie, show_id, online_id)
 
