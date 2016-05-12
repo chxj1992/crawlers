@@ -1,47 +1,50 @@
 # coding=utf-8
-import json
 import random
 import re
 
 import requests
 from bs4 import BeautifulSoup
 
-BASE_URL = 'http://www.samair.ru'
+
+def shuffle(proxy_list):
+    random.shuffle(proxy_list)
+    return proxy_list.pop()
 
 
-def shuffle():
-    try:
-        proxy_list = Crawler().get_proxy_list()
-        random.shuffle(proxy_list)
-        return json.dumps(proxy_list.pop())
-    except Exception as e:
-        print e.message
-        return 'system error'
+def samair():
+    return Samair().proxy_list()
 
 
-class Crawler:
+def ssl_proxies():
+    return SSLProxies().proxy_list()
+
+
+class Samair:
     def __init__(self):
-        pass
+        self.url = 'http://www.samair.ru'
 
-    def get_proxy_list(self):
-        content = requests.get(BASE_URL + '/proxy').text
-        soup = BeautifulSoup(content, 'lxml')
-        proxy_elem_list = soup.find(id='proxylist').find_all('span')
-        css_path = soup.find('link').find_next().get('href')
+    def proxy_list(self):
+        try:
+            content = requests.get(self.url + '/proxy').text
+            soup = BeautifulSoup(content, 'lxml')
+            proxy_elem_list = soup.find(id='proxylist').find_all('span')
+            css_path = soup.find('link').find_next().get('href')
 
-        port_map = self.get_port_map(css_path)
-        proxy_list = []
-        for proxy_elem in proxy_elem_list:
-            proxy_list.append({
-                'ip': proxy_elem.get_text()[0:-1],
-                'port': port_map[proxy_elem.get('class')[0]],
-            })
+            port_map = self.get_port_map(css_path)
+            proxy_list = []
+            for proxy_elem in proxy_elem_list:
+                proxy_list.append({
+                    'ip': proxy_elem.get_text()[0:-1],
+                    'port': port_map[proxy_elem.get('class')[0]],
+                })
 
-        return proxy_list
+            return proxy_list
+        except Exception as e:
+            print e.message
+            return {'error': 'system error'}
 
-    @staticmethod
-    def get_port_map(css_path):
-        content = requests.get(BASE_URL + css_path).text
+    def get_port_map(self, css_path):
+        content = requests.get(self.url + css_path).text
         matches = re.findall('\.(\w+)\:.*\"(\d+)\"', content)
 
         port_map = {}
@@ -49,3 +52,45 @@ class Crawler:
             port_map[match[0]] = match[1]
 
         return port_map
+
+
+class SSLProxies:
+    def __init__(self):
+        self.url = 'http://www.sslproxies.org/'
+
+    def proxy_list(self):
+        try:
+            content = requests.get(self.url).text
+            soup = BeautifulSoup(content, 'lxml')
+            table = soup.find(id='proxylisttable')
+            proxy_elem_list = table.find('tbody').find_all('tr')
+
+            return map(lambda proxy_elem:
+                       {'ip': proxy_elem.find('td').get_text(),
+                        'port': proxy_elem.find('td').find_next().get_text()},
+                       proxy_elem_list)
+        except Exception as e:
+            print e.message
+            return {'error': 'system error'}
+
+
+class HideMyAss:
+    def __init__(self):
+        self.url = 'http://proxylist.hidemyass.com/'
+        self.headers = {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+        self.proxies = {
+            'http': "socks5://127.0.0.1:1080",
+            'https': "socks5://127.0.0.1:1080"
+        }
+
+    def proxy_list(self):
+        try:
+            res = requests.get(self.url, headers=self.headers, proxies=self.proxies).json()
+            soup = BeautifulSoup(res['table'], 'lxml')
+            tr = soup.find('tr').prettify()
+            print tr
+        except Exception as e:
+            print e.message
+            return {'error': 'system error'}
