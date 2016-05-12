@@ -25,6 +25,12 @@ def save(data):
     db.execute(sql)
 
 
+def get_https_proxy():
+    url = 'http://115.29.46.132:5000/proxy/sslproxies/shuffle' 
+    proxy = requests.get(url).json()
+    return 'http://' + proxy['ip'] + ':' + proxy['port']
+
+
 class Crawler:
     def __init__(self):
         self.host = "https://www.ncl.com/vacations"
@@ -36,11 +42,12 @@ class Crawler:
             'Referer': self.host
         }
         self.proxies = {
-            'https': 'https://117.131.216.214:8080'
+            'https': get_https_proxy()
         }
 
     def run(self, page):
         url = self.host + '?pageSize=20&currentPage=' + str(page)
+        print self.proxies
         content = requests.get(url, headers=self.headers, proxies=self.proxies).text
 
         soup = BeautifulSoup(content, 'lxml')
