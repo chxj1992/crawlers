@@ -46,7 +46,6 @@ class Samair:
     def get_port_map(self, css_path):
         content = requests.get(self.url + css_path).text
         matches = re.findall('\.(\w+)\:.*\"(\d+)\"', content)
-
         port_map = {}
         for match in matches:
             port_map[match[0]] = match[1]
@@ -80,17 +79,33 @@ class HideMyAss:
         self.headers = {
             'X-Requested-With': 'XMLHttpRequest'
         }
+        # fuck the GFW, socks proxies option requires `requests>=2.10`
         self.proxies = {
             'http': "socks5://127.0.0.1:1080",
             'https': "socks5://127.0.0.1:1080"
         }
 
-    def proxy_list(self):
+    def proxy_list(self, condition={}, fuck_gfw=False):
         try:
+            if not fuck_gfw:
+                self.proxies = {}
+
             res = requests.get(self.url, headers=self.headers, proxies=self.proxies).json()
             soup = BeautifulSoup(res['table'], 'lxml')
-            tr = soup.find('tr').prettify()
-            print tr
+            tr = soup.find('tr')
+            return self.get_style_map(tr.find('style'))
         except Exception as e:
             print e.message
             return {'error': 'system error'}
+
+    @staticmethod
+    def get_style_map(style_elem):
+        matches = re.findall('\.(.*)\{(.*)\}', style_elem.get_text())
+        style_map = {}
+        for match in matches:
+            style_map[match[0]] = match[1]
+
+        return style_map
+
+
+print HideMyAss().proxy_list({}, True)
