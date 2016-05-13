@@ -6,12 +6,13 @@ import re
 import requests
 
 
-def order_with_seats(cookie, show_id, online_id, area_id, phone, address, name, num):
+def order_with_seats(cookie,  online_id, area_id, phone, address, name, num):
     try:
-        c = Crawler(cookie, show_id, online_id, area_id)
+        c = Crawler(cookie, online_id, area_id)
 
         # 选座
-        map(lambda seat: c.mt_seat(seat['seatId']), c.get_seats(num))
+        show_id = c.get_show_id()
+        map(lambda seat: c.mt_seat(show_id, seat['seatId']), c.get_seats(show_id, num))
         # 下单
         c.create_order(phone, address, name)
         return 'success!'
@@ -19,12 +20,13 @@ def order_with_seats(cookie, show_id, online_id, area_id, phone, address, name, 
         return 'failed!'
 
 
-def order_without_seats(cookie, show_id, online_id, phone, address, name, num):
+def order_without_seats(cookie, online_id, phone, address, name, num):
     try:
-        c = Crawler(cookie, show_id, online_id)
+        c = Crawler(cookie, online_id)
 
         # 订票
-        c.add_tickets(num)
+        show_id = c.get_show_id()
+        c.add_tickets(show_id, num)
         # 下单
         c.create_order(phone, address, name)
         return 'success!'
@@ -36,8 +38,7 @@ SEAT_STATUS_AVAILABLE = 1
 
 
 class Crawler:
-    def __init__(self, cookie, show_id, online_id, area_id=''):
-        self.show_id = show_id
+    def __init__(self, cookie, online_id, area_id=''):
         self.online_id = online_id
         self.area_id = area_id
         self.header = {
@@ -45,8 +46,8 @@ class Crawler:
             'Cookie': cookie,
         }
 
-    def get_seats(self, n=1):
-        url = 'http://www.wepiao.com/index.php?r=item/seats&onlineId=' + self.online_id + '&showId=' + self.show_id + '&areaId=' + self.area_id
+    def get_seats(self, show_id, n=1):
+        url = 'http://www.wepiao.com/index.php?r=item/seats&onlineId=' + self.online_id + '&showId=' + show_id + '&areaId=' + self.area_id
 
         res = requests.get(url=url, headers=self.header).text
         matches = re.search('\[\{.*\}\]', res)
@@ -56,12 +57,12 @@ class Crawler:
         start = random.randint(0, len(available_seats) - n)
         return available_seats[start:start + n]
 
-    def mt_seat(self, seat_id):
+    def mt_seat(self, show_id, seat_id):
         url = 'http://www.wepiao.com/index.php?r=cart/MTSeat'
 
         data = {
             'onlineId': self.online_id,
-            'showId': self.show_id,
+            'showId': show_id,
             'areaId': self.area_id,
             'chooseSeatId': seat_id,
         }
@@ -69,20 +70,20 @@ class Crawler:
         res = requests.post(url=url, data=data, headers=self.header).json()
         print res
 
-    def add_tickets(self, n=1):
+    def add_tickets(self, show_id, n=1):
         url = 'http://www.wepiao.com/index.php?r=cart/addTickets'
         data = {
-            'tickets[' + self.get_price_id() + ']': n,
+            'tickets[' + self.get_price_id(show_id) + ']': n,
             'onlineId': self.online_id,
-            'showId': self.show_id,
+            'showId': show_id,
         }
         res = requests.post(url=url, data=data, headers=self.header)
         res.encoding = 'UTF-8'
 
-    def get_price_id(self):
+    def get_price_id(self, show_id):
         url = 'http://www.wepiao.com/index.php?r=item/ajaxPrices'
         data = {
-            'screeningId': self.get_screen_id(),
+            'screeningId': show_id,
             'onlineId': self.online_id
         }
         res = requests.post(url=url, data=data, headers=self.header).json()
@@ -90,7 +91,7 @@ class Crawler:
 
         return available_prices[0]['priceId']
 
-    def get_screen_id(self):
+    def get_show_id(self):
         url = 'http://www.wepiao.com/index.php?r=item/detail/id/' + self.online_id
         res = requests.get(url=url, headers=self.header).text
         matches = re.search('class=\"screening\".*id=\"(\d+)\"', res)
