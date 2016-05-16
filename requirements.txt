@@ -6,3 +6,4 @@ selenium == 2.49.2
 beautifulsoup4 == 4.4.1
 dotenv == 0.0.5
 lxml == 3.5.0
+PySocks == 1.5.6
