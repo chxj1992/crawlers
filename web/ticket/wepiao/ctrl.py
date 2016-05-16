@@ -8,9 +8,9 @@ from ticket.wepiao import crawler
 wepiao = Module(__name__, 'wepiao')
 
 default_cookie = open(sys.path[0] + "/web/ticket/wepiao/cookie.txt").read().strip()
-default_phone = '15669207848'
-default_address = '华西坝大学路12号'
-default_name = '陈先生'
+default_phone = '15528285053'
+default_address = '天府软件园D6座7层'
+default_name = '陈晓敬'
 default_ticket_number = 2
 
 
@@ -26,18 +26,16 @@ def get_values():
 
 @wepiao.route("/with-seats")
 def order_with_seats():
-    show_id = request.args.get('show_id', '10015925560998303')
     online_id = request.args.get('online_id', 'c75868491b564bd49b2bdb8e513d67be')
     area_id = request.args.get('area_id', '10056561761863882')
     values = get_values()
 
-    return crawler.order_with_seats(values[0], show_id, online_id, area_id, values[1], values[2], values[3], values[4])
+    return crawler.order_with_seats(values[0], online_id, area_id, values[1], values[2], values[3], values[4])
 
 
 @wepiao.route("/without-seats")
 def order_without_seats():
-    show_id = request.args.get('show_id', '14569213092998589')
     online_id = request.args.get('online_id', '780aa9a6ec0a489bb0e78588cb6d5cbd')
     values = get_values()
 
-    return crawler.order_without_seats(values[0], show_id, online_id, values[1], values[2], values[3], values[4])
+    return crawler.order_without_seats(values[0], online_id, values[1], values[2], values[3], values[4])
