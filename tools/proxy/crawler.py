@@ -7,8 +7,11 @@ from bs4 import BeautifulSoup
 
 
 def shuffle(proxy_list):
-    random.shuffle(proxy_list)
-    return proxy_list.pop()
+    try:
+        random.shuffle(proxy_list)
+        return proxy_list.pop()
+    except Exception as e:
+        return {'error': 'system error', 'msg': e.message}
 
 
 def samair():
