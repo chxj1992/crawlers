@@ -24,7 +24,7 @@ def get_values():
     return cookie, phone, address, name, ticket_number
 
 
-@wepiao.route("/with-seats")
+@wepiao.route("/wepiao/with-seats")
 def order_with_seats():
     online_id = request.args.get('online_id', 'c75868491b564bd49b2bdb8e513d67be')
     area_id = request.args.get('area_id', '10056561761863882')
@@ -33,7 +33,7 @@ def order_with_seats():
     return crawler.order_with_seats(values[0], online_id, area_id, values[1], values[2], values[3], values[4])
 
 
-@wepiao.route("/without-seats")
+@wepiao.route("/wepiao/without-seats")
 def order_without_seats():
     online_id = request.args.get('online_id', '780aa9a6ec0a489bb0e78588cb6d5cbd')
     values = get_values()

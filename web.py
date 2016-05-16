@@ -1,7 +1,7 @@
 from flask import Flask
 
+from web.proxy.ctrl import proxy
 from web.ticket.wepiao.ctrl import wepiao
-from web.tools.proxy.ctrl import proxy
 
 app = Flask(__name__)
 app.register_module(wepiao)
