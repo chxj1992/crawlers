@@ -19,8 +19,8 @@ def ssl_proxies():
     return SSLProxies().proxy_list()
 
 
-def hide_my_ass():
-    return HideMyAss().proxy_list({}, True)
+def hide_my_ass(protocol):
+    return HideMyAss().proxy_list(protocol, True)
 
 
 class Samair:
@@ -40,6 +40,7 @@ class Samair:
                 proxy_list.append({
                     'ip': proxy_elem.get_text()[0:-1],
                     'port': port_map[proxy_elem.get('class')[0]],
+                    'protocol': 'http',
                 })
 
             return proxy_list
@@ -69,8 +70,12 @@ class SSLProxies:
             proxy_elem_list = table.find('tbody').find_all('tr')
 
             return map(lambda proxy_elem:
-                       {'ip': proxy_elem.find('td').get_text(),
-                        'port': proxy_elem.find('td').find_next().get_text()},
+                       {
+                           'ip': proxy_elem.find('td').get_text(),
+                           'port': proxy_elem.find('td').find_next().get_text(),
+                           'protocol': 'https',
+
+                       },
                        proxy_elem_list)
         except Exception as e:
             print e.message
@@ -81,7 +86,7 @@ class HideMyAss:
     def __init__(self):
         self.url = 'http://proxylist.hidemyass.com/'
         self.headers = {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
         }
         # fuck the GFW, socks proxies option requires `requests>=2.10`
         self.proxies = {
@@ -89,11 +94,12 @@ class HideMyAss:
             'https': "socks5://127.0.0.1:1080"
         }
 
-    def proxy_list(self, condition={}, fuck_gfw=False):
+    def proxy_list(self, protocol='http', fuck_gfw=False):
         try:
             if not fuck_gfw:
                 self.proxies = {}
-            res = requests.get(self.url, headers=self.headers, proxies=self.proxies).json()
+
+            res = requests.post(self.url, headers=self.headers, proxies=self.proxies).json()
             soup = BeautifulSoup(res['table'], 'lxml')
 
             proxy_list = []
@@ -101,11 +107,14 @@ class HideMyAss:
                 regexp = self.build_hidden_reg_exp(row.find('style'))
                 clean_row = re.sub(regexp, '', str(row))
                 row_soup = BeautifulSoup(clean_row, 'lxml')
-                matches = re.match('.*?(\d+\.\d+\.\d+\.\d+)\s+(\d+)', row_soup.get_text())
-                proxy_list.append({
-                    'ip': matches.group(1),
-                    'port': matches.group(2),
-                })
+                matches = re.match('.*?(\d+\.\d+\.\d+\.\d+)\s+(\d+)\s+(\w+)\s+(\S+)', row_soup.get_text())
+                p = matches.group(4).lower()
+                if p == protocol:
+                    proxy_list.append({
+                        'ip': matches.group(1),
+                        'port': matches.group(2),
+                        'protocol': p,
+                    })
             return proxy_list
         except Exception as e:
             print e.message

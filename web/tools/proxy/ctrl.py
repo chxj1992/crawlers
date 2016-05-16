@@ -1,7 +1,7 @@
 # coding=utf-8
 import json
 
-from flask import Module
+from flask import Module, request
 
 from tools.proxy import crawler
 
@@ -30,9 +30,11 @@ def sslproxies_shuffle():
 
 @proxy.route("/proxy/hidemyass")
 def hidemyass():
-    return json.dumps(crawler.hide_my_ass())
+    protocol = request.args.get('protocol', 'http')
+    return json.dumps(crawler.hide_my_ass(protocol))
 
 
 @proxy.route("/proxy/hidemyass/shuffle")
 def hidemyass_shuffle():
-    return json.dumps(crawler.shuffle(crawler.hide_my_ass()))
+    protocol = request.args.get('protocol', 'http')
+    return json.dumps(crawler.shuffle(crawler.hide_my_ass(protocol)))
