@@ -10,7 +10,7 @@ app.register_module(proxy)
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return "Hello Crawlers!"
 
 
 if __name__ == "__main__":
