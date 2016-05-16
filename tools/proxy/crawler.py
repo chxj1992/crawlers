@@ -93,8 +93,8 @@ class HideMyAss:
         }
         # fuck the GFW, socks proxies option requires `requests>=2.10`
         self.proxies = {
-            'http': "socks5://127.0.0.1:1080",
-            'https': "socks5://127.0.0.1:1080"
+            'http': "socks5://shadowsocks:1080",
+            'https': "socks5://shadowsocks:1080"
         }
 
     def proxy_list(self, protocol='http', fuck_gfw=False):
