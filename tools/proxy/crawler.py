@@ -19,6 +19,10 @@ def ssl_proxies():
     return SSLProxies().proxy_list()
 
 
+def hide_my_ass():
+    return HideMyAss().proxy_list({}, True)
+
+
 class Samair:
     def __init__(self):
         self.url = 'http://www.samair.ru'
@@ -89,14 +93,31 @@ class HideMyAss:
         try:
             if not fuck_gfw:
                 self.proxies = {}
-
             res = requests.get(self.url, headers=self.headers, proxies=self.proxies).json()
             soup = BeautifulSoup(res['table'], 'lxml')
-            tr = soup.find('tr')
-            return self.get_style_map(tr.find('style'))
+
+            proxy_list = []
+            for row in soup.find_all('tr'):
+                regexp = self.build_hidden_reg_exp(row.find('style'))
+                clean_row = re.sub(regexp, '', str(row))
+                row_soup = BeautifulSoup(clean_row, 'lxml')
+                matches = re.match('.*?(\d+\.\d+\.\d+\.\d+)\s+(\d+)', row_soup.get_text())
+                proxy_list.append({
+                    'ip': matches.group(1),
+                    'port': matches.group(2),
+                })
+            return proxy_list
         except Exception as e:
             print e.message
             return {'error': 'system error'}
+
+    def build_hidden_reg_exp(self, style_elem):
+        regexp = '<style>[\s\S]*?<\/style>|<\w+ style="display:none.*?>.*?<\/.*?>'
+        style_map = self.get_style_map(style_elem)
+        for style in style_map:
+            if style_map[style] == 'display:none':
+                regexp += '|<\w+ class="' + style + '">.*?<\/.*?>'
+        return regexp
 
     @staticmethod
     def get_style_map(style_elem):
@@ -106,6 +127,3 @@ class HideMyAss:
             style_map[match[0]] = match[1]
 
         return style_map
-
-
-print HideMyAss().proxy_list({}, True)

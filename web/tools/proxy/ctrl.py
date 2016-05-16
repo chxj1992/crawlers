@@ -26,3 +26,13 @@ def sslproxies():
 @proxy.route("/proxy/sslproxies/shuffle")
 def sslproxies_shuffle():
     return json.dumps(crawler.shuffle(crawler.ssl_proxies()))
+
+
+@proxy.route("/proxy/hidemyass")
+def hidemyass():
+    return json.dumps(crawler.hide_my_ass())
+
+
+@proxy.route("/proxy/hidemyass/shuffle")
+def hidemyass_shuffle():
+    return json.dumps(crawler.shuffle(crawler.hide_my_ass()))
