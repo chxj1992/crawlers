@@ -26,7 +26,7 @@ def save(data):
 
 
 def get_https_proxy():
-    url = 'http://115.29.46.132:5000/proxy/sslproxies/shuffle' 
+    url = 'http://115.29.46.132:5000/proxy/hidemyass/shuffle?protocol=https'
     proxy = requests.get(url).json()
     return 'http://' + proxy['ip'] + ':' + proxy['port']
 

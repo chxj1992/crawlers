@@ -46,7 +46,7 @@ class Samair:
             return proxy_list
         except Exception as e:
             print e.message
-            return {'error': 'system error'}
+            return {'error': 'system error', 'msg': e.message}
 
     def get_port_map(self, css_path):
         content = requests.get(self.url + css_path).text
@@ -79,7 +79,7 @@ class SSLProxies:
                        proxy_elem_list)
         except Exception as e:
             print e.message
-            return {'error': 'system error'}
+            return {'error': 'system error', 'msg': e.message}
 
 
 class HideMyAss:
@@ -118,7 +118,7 @@ class HideMyAss:
             return proxy_list
         except Exception as e:
             print e.message
-            return {'error': 'system error'}
+            return {'error': 'system error', 'msg': e.message}
 
     def build_hidden_reg_exp(self, style_elem):
         regexp = '<style>[\s\S]*?<\/style>|<\w+ style="display:none.*?>.*?<\/.*?>'
