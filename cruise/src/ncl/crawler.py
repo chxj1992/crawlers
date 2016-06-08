@@ -26,7 +26,7 @@ def save(data):
 
 
 def get_https_proxy():
-    url = 'http://115.29.46.132:5000/proxy/hidemyass/shuffle?protocol=https'
+    url = 'http://crawlers.chxj.name/proxy/hidemyass/shuffle?protocol=https'
     proxy = requests.get(url).json()
     return 'http://' + proxy['ip'] + ':' + proxy['port']
 
@@ -35,14 +35,12 @@ class Crawler:
     def __init__(self):
         self.host = "https://www.ncl.com/vacations"
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36',
-            'Accept': 'text/html;q=0.9,*/*;q=0.8',
-            'Accept-Charset': 'utf-8,gbk;q=0.7,*;q=0.3',
-            'Connection': 'close',
-            'Referer': self.host
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
         }
         self.proxies = {
-            'https': get_https_proxy()
+            # TODO: proxy not working ...
+            # 'https': get_https_proxy()
         }
 
     def run(self, page):
@@ -87,7 +85,6 @@ class Crawler:
 
             datetime = row.find(class_='datepriceselector ').get('data-value').split(',')
             departure_time = int(time.mktime(time.strptime(datetime[0] + datetime[1], "%B %d %Y")))
-
             data.append("('ncl', '" + \
                         str(cruise['itinerary_id']) + \
                         "', '" + cruise['title'] + \
