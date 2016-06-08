@@ -14,15 +14,16 @@ class Crawler:
     def __init__(self):
         self.host = "http://www.royalcaribbean.com/ajax"
         self.headers = {
-            'Cookie': open(sys.path[0] + "/src/royalcaribbean/cookie.txt").read().strip()
+            'Cookie': open(sys.path[0] + "/src/royalcaribbean/cookie.txt").read().strip(),
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36',
         }
 
     def run(self, page):
-        url = self.host + '/cruises/searchbody?action=update&currentPage=' + str(page-1)
+        url = self.host + '/cruises/searchbody?action=update&currentPage=' + str(page - 1)
         content = requests.get(url, headers=self.headers).text
 
         soup = BeautifulSoup(content, 'lxml')
-        results = soup.find_all("div", class_="search-result")
+        results = soup.find_all("div", class_="search-results")
 
         if len(results) == 0:
             return False
@@ -31,12 +32,12 @@ class Crawler:
             cruise = {}
             title_elem = row.find(class_="search-result-top").find("h3").get_text(strip=True)
             cruise['title'] = re.compile(r'(\d.*)').findall(title_elem)[0]
-            cruise['ship_name'] = row.find(class_="cruise-ship").find("strong").get_text(strip=True)
+            cruise['ship_name'] = row.find(class_="cruise-details").find("span").find("strong").get_text(strip=True)
             cruise['duration'] = re.compile(r'^\d+').findall(cruise['title'])[0]
             cruise['departure_port'] = row.find(class_="cruise-details").find("strong").get_text(strip=True).split(
                     ",").pop(0)
 
-            detail_url = self.host + '/cruise/inlinepricing/' + row.find(class_="cruise-detail-link cta-link").get(
+            detail_url = self.host + '/cruise/inlinepricing/' + row.find(class_="cruise-detail-link").get(
                     "href").split("/").pop()
 
             self.get_detail(detail_url, cruise)
@@ -65,7 +66,7 @@ class Crawler:
                         "', '" + cruise['ship_name'] + \
                         "', '" + str(cruise['duration']) + \
                         "', '" + cruise['departure_port'] + \
-                        "', FROM_UNIXTIME(" + str(departure_time)+ \
+                        "', FROM_UNIXTIME(" + str(departure_time) + \
                         "), '" + str(inside) + \
                         "', '" + str(ocean_view) + \
                         "', '" + str(balcony) + \
