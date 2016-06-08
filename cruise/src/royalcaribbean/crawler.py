@@ -10,6 +10,22 @@ from bs4 import BeautifulSoup
 from .. import db
 
 
+def get_http_proxy(counter=0):
+    try:
+        counter += 1
+        url = 'http://crawlers.chxj.name/proxy/hidemyass/shuffle?protocol=http'
+        proxy = requests.get(url).json()
+        url = 'http://' + proxy['ip'] + ':' + proxy['port']
+        print 'proxies: ' + url
+        return url
+    except Exception as e:
+        print 'retry get proxy'
+        if counter > 10:
+            print 'proxy service is down'
+            return False
+        return get_http_proxy(counter)
+
+
 class Crawler:
     def __init__(self):
         self.host = "http://www.royalcaribbean.com/ajax"
@@ -17,10 +33,13 @@ class Crawler:
             'Cookie': open(sys.path[0] + "/src/royalcaribbean/cookie.txt").read().strip(),
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36',
         }
+        self.proxies = {
+            # 'http': get_http_proxy()
+        }
 
     def run(self, page):
         url = self.host + '/cruises/searchbody?action=update&currentPage=' + str(page - 1)
-        content = requests.get(url, headers=self.headers).text
+        content = requests.get(url, headers=self.headers, proxies=self.proxies).text
 
         soup = BeautifulSoup(content, 'lxml')
         results = soup.find_all("div", class_="search-results")
@@ -45,7 +64,7 @@ class Crawler:
         return True
 
     def get_detail(self, url, cruise):
-        res = requests.get(url, headers=self.headers).json()
+        res = requests.get(url, headers=self.headers, proxies=self.proxies).json()
 
         data = []
         price_pattern = re.compile(r'^\$(\d+)')

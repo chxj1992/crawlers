@@ -25,10 +25,20 @@ def save(data):
     db.execute(sql)
 
 
-def get_https_proxy():
-    url = 'http://crawlers.chxj.name/proxy/hidemyass/shuffle?protocol=https'
-    proxy = requests.get(url).json()
-    return 'http://' + proxy['ip'] + ':' + proxy['port']
+def get_https_proxy(counter=0):
+    try:
+        counter += 1
+        url = 'http://crawlers.chxj.name/proxy/hidemyass/shuffle?protocol=https'
+        proxy = requests.get(url).json()
+        url = 'https://' + proxy['ip'] + ':' + proxy['port']
+        print 'proxies: ' + url
+        return url
+    except Exception as e:
+        print 'retry get proxy'
+        if counter > 10:
+            print 'proxy service is down'
+            return False
+        return get_https_proxy(counter)
 
 
 class Crawler:
@@ -39,13 +49,11 @@ class Crawler:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
         }
         self.proxies = {
-            # TODO: proxy not working ...
             # 'https': get_https_proxy()
         }
 
     def run(self, page):
         url = self.host + '?pageSize=20&currentPage=' + str(page)
-        print self.proxies
         content = requests.get(url, headers=self.headers, proxies=self.proxies).text
 
         soup = BeautifulSoup(content, 'lxml')
