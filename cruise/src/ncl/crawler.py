@@ -30,7 +30,7 @@ def get_https_proxy(counter=0):
         counter += 1
         url = 'http://crawlers.chxj.name/proxy/hidemyass/shuffle?protocol=https'
         proxy = requests.get(url).json()
-        url = 'https://' + proxy['ip'] + ':' + proxy['port']
+        url = 'http://' + proxy['ip'] + ':' + proxy['port']
         print 'proxies: ' + url
         return url
     except Exception as e:
@@ -48,6 +48,7 @@ class Crawler:
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
         }
+        # the free proxy service is not very stable ...
         self.proxies = {
             # 'https': get_https_proxy()
         }

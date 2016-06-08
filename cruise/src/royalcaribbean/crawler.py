@@ -33,8 +33,9 @@ class Crawler:
             'Cookie': open(sys.path[0] + "/src/royalcaribbean/cookie.txt").read().strip(),
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36',
         }
+        # the free proxy service is not very stable ...
         self.proxies = {
-            # 'http': get_http_proxy()
+            'http': get_http_proxy()
         }
 
     def run(self, page):
