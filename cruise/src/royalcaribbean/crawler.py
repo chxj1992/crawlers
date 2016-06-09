@@ -35,7 +35,7 @@ class Crawler:
         }
         # the free proxy service is not very stable ...
         self.proxies = {
-            'http': get_http_proxy()
+            #'http': get_http_proxy()
         }
 
     def run(self, page):
@@ -52,7 +52,8 @@ class Crawler:
             cruise = {}
             title_elem = row.find(class_="search-result-top").find("h3").get_text(strip=True)
             cruise['title'] = re.compile(r'(\d.*)').findall(title_elem)[0]
-            cruise['ship_name'] = row.find(class_="cruise-details").find("span").find("strong").get_text(strip=True)
+
+            cruise['ship_name'] = row.find(class_="cruise-details").select("span > strong").pop().get_text(strip=True)
             cruise['duration'] = re.compile(r'^\d+').findall(cruise['title'])[0]
             cruise['departure_port'] = row.find(class_="cruise-details").find("strong").get_text(strip=True).split(
                     ",").pop(0)
