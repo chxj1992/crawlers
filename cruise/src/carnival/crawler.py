@@ -20,7 +20,7 @@ class Crawler:
         }
 
     def run(self, page):
-        url = self.host + 'Get?pageSize=100&pageNumber=' + str(page)
+        url = self.host + 'Get?datFrom=012016&datTo=012020&pageSize=100&pageNumber=' + str(page)
         res = requests.get(url, headers=self.headers).json()
 
         if len(res['Itineraries']) == 0:
