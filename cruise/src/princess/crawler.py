@@ -10,7 +10,10 @@ from .. import db
 
 
 def match_price(row, index):
-    match = re.compile(r'\d+').findall(row.find("td", class_=index).get_text(strip=True).replace(',', ''))
+    price_elem = row.find("td", class_=index)
+    if price_elem is None:
+        return 0
+    match = re.compile(r'\d+').findall(price_elem.get_text(strip=True).replace(',', ''))
     return 0 if (len(match) == 0) else match[0]
 
 
