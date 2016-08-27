@@ -62,7 +62,11 @@ class Crawler:
     @staticmethod
     def build_sql(row, cruise):
         data = []
-        for departure_time in row.select('option[data-tour]'):
+        departure_time_list = row.select('option[data-tour]')
+        if len(departure_time_list) == 0:
+            departure_time_list = [row.find(class_="depart-date")]
+
+        for departure_time in departure_time_list:
             departure_time = int(time.mktime(time.strptime(departure_time.get_text(strip=True), "%a, %b %d, %Y")))
             data.append("('princess', '" + \
                         str(cruise['itinerary_id']) + \
