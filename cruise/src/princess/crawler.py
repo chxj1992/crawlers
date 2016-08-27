@@ -23,16 +23,12 @@ def save(data):
 class Crawler:
     def __init__(self):
         self.host = "http://www.princess.com/find/pagination.do"
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
-        }
 
     def run(self, page):
         size = 100
         url = self.host + '?searchCriteria.startIndex=' + str((page - 1) * size) + '&searchCriteria.endIndex=' + str(
                 page * size)
-        content = requests.get(url, headers=self.headers).text
+        content = requests.get(url).text
 
         soup = BeautifulSoup(content, 'lxml')
         results = soup.find_all("div", class_="result")
