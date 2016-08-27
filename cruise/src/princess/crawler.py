@@ -30,7 +30,7 @@ class Crawler:
 
     def run(self, page):
         size = 100
-        url = self.host + '?searchCriteria.startIndex=' + str((page - 1) * size) + '&searchCriteria.endIndex=12' + str(
+        url = self.host + '?searchCriteria.startIndex=' + str((page - 1) * size) + '&searchCriteria.endIndex=' + str(
                 page * size)
         content = requests.get(url, headers=self.headers).text
 
