@@ -32,7 +32,7 @@ class Crawler:
 
     def run(self, page):
         size = 100
-        url = self.host + '?searchCriteria.startIndex=' + str((page - 1) * size) + '&searchCriteria.endIndex=' + str(
+        url = self.host + '?searchCriteria.currency=USD&searchCriteria.startIndex=' + str((page - 1) * size) + '&searchCriteria.endIndex=' + str(
                 page * size)
         content = requests.get(url, headers=self.headers).text
         soup = BeautifulSoup(content, 'lxml')
