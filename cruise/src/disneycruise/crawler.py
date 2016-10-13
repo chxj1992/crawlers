@@ -16,6 +16,9 @@ def get_price(item):
 def build_row(sailing, cruise_sailings):
     row = {}
     sailing_id = sailing['sailingId']
+
+    if sailing_id not in cruise_sailings['sailings']:
+        return False
     cruise_sailing = cruise_sailings['sailings'][sailing_id]
 
     row['project'] = 'disneycruise'
@@ -23,6 +26,8 @@ def build_row(sailing, cruise_sailings):
     row['duration'] = cruise_sailing['numberOfNights']
     row['itinerary_id'] = cruise_sailing['product'].split(';').pop(0)
 
+    if cruise_sailing['product'] not in cruise_sailings['products']:
+        return False
     cruise_product = cruise_sailings['products'][cruise_sailing['product']]
     cruise_ship = cruise_sailings['ships'][cruise_sailing['ship']]
     cruise_port = cruise_sailings['ports'][cruise_sailing['portFrom']]
@@ -86,13 +91,15 @@ class Crawler:
         data = []
         for sailing_id in sailings:
             row = build_row(sailings[sailing_id], cruise_sailings)
+            if not row:
+                continue
             data.append("('disneycruise', '" + \
                         row['itinerary_id'] + \
                         "', '" + row['title'] + \
                         "', '" + row['ship_name'] + \
-                        "', '" + str(row['duration'])+ \
+                        "', '" + str(row['duration']) + \
                         "', '" + row['departure_port'] + \
-                        "', FROM_UNIXTIME(" + str(row['departure_time'])+ \
+                        "', FROM_UNIXTIME(" + str(row['departure_time']) + \
                         "), '" + str(row['inside']) + \
                         "', '" + str(row['oceanview']) + \
                         "', '" + str(row['balcony']) + \
@@ -103,3 +110,8 @@ class Crawler:
 
         db.save(data)
         return False
+
+
+if __name__ == "__main__":
+    c = Crawler()
+    c.run(1)
