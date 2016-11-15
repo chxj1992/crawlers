@@ -13,7 +13,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 proxies = {
-    'http': helper.get_http_proxy()
+    # 'http': helper.get_http_proxy()
 }
 
 

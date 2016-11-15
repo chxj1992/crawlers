@@ -6,6 +6,7 @@ import sys
 import requests
 from bs4 import BeautifulSoup
 
+from haodf import db
 from haodf.jibing_list_parser import JibingListParser
 
 reload(sys)
@@ -21,6 +22,9 @@ class SectionListParser:
         self.proxies = proxies
 
     def run(self):
+        if db.get_url(self.url) is not None:
+            return True
+
         content = requests.get(self.url, headers=self.headers, proxies=self.proxies).text
         soup = BeautifulSoup(content, 'lxml')
         results = soup.select('.ksbd a')
@@ -35,6 +39,7 @@ class SectionListParser:
             url = row.attrs['href'].strip()
             JibingListParser('http://www.haodf.com' + url, section, self.proxies).run()
 
+        db.save_url(self.url)
         return True
 
 # sectionListParser = SectionListParser('http://www.haodf.com/jibing/xiaoerke/list.htm')

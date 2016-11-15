@@ -38,6 +38,9 @@ class AskListParser:
 
     def get_list(self, page):
         url = self.base_url + str(page) + '.htm'
+        if db.get_url(url) is not None:
+            return True
+
         content = requests.get(url, headers=self.headers, proxies=self.proxies).text
         soup = BeautifulSoup(content, 'lxml')
         results = soup.select('.bbd_c > .advise_box_con')
@@ -59,6 +62,7 @@ class AskListParser:
             sql = 'INSERT INTO inquiries(`content`, `section`, `tag`, `gender`, `age`) VALUES (%s, %s, %s, %s, %s)'
             db.execute(sql, [text, self.section, self.tag, gender, age])
 
+        db.save_url(url)
         return True
 
 

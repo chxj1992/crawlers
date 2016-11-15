@@ -6,6 +6,7 @@ import sys
 import requests
 from bs4 import BeautifulSoup
 
+from haodf import db
 from haodf.ask_list_parser import AskListParser
 
 reload(sys)
@@ -22,6 +23,9 @@ class JibingListParser:
         self.proxies = proxies
 
     def run(self):
+        if db.get_url(self.url) is not None:
+            return True
+
         content = requests.get(self.url, headers=self.headers, proxies=self.proxies).text
         soup = BeautifulSoup(content, 'lxml')
         results = soup.select('.m_ctt_green a')
@@ -34,8 +38,10 @@ class JibingListParser:
         for row in results:
             href = row.attrs['href'].replace('.htm', '/zixun-').strip()
             tag = row.get_text().strip()
-            AskListParser('http://www.haodf.com' + href, self.section, tag, self.proxies).run()
+            url = 'http://www.haodf.com' + href
+            AskListParser(url, self.section, tag, self.proxies).run()
 
+        db.save_url(self.url)
         return True
 
 # jibingListParser = JibingListParser('http://www.haodf.com/jibing/erkezonghe/list.htm', '儿科')
