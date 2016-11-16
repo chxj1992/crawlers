@@ -39,6 +39,7 @@ class AskListParser:
     def get_list(self, page):
         url = self.base_url + str(page) + '.htm'
         if db.get_url(url) is not None:
+            print 'ask list ' + url + ' exists'
             return True
 
         content = requests.get(url, headers=self.headers, proxies=self.proxies).text

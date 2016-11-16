@@ -23,6 +23,7 @@ class SectionListParser:
 
     def run(self):
         if db.get_url(self.url) is not None:
+            print 'category ' + self.url + ' exists'
             return True
 
         content = requests.get(self.url, headers=self.headers, proxies=self.proxies).text

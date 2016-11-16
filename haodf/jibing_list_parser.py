@@ -24,6 +24,7 @@ class JibingListParser:
 
     def run(self):
         if db.get_url(self.url) is not None:
+            print 'section ' + self.url + ' exists'
             return True
 
         content = requests.get(self.url, headers=self.headers, proxies=self.proxies).text
@@ -38,8 +39,14 @@ class JibingListParser:
         for row in results:
             href = row.attrs['href'].replace('.htm', '/zixun-').strip()
             tag = row.get_text().strip()
+
             url = 'http://www.haodf.com' + href
+            if db.get_url(url) is not None:
+                print 'jibing ' + url + ' exists'
+                continue
+
             AskListParser(url, self.section, tag, self.proxies).run()
+            db.save_url(url)
 
         db.save_url(self.url)
         return True

@@ -9,6 +9,8 @@ from bs4 import BeautifulSoup
 from haodf import helper
 from haodf.section_list_parser import SectionListParser
 
+import db
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -36,7 +38,8 @@ class CategoryListParser:
 
         for row in results:
             href = row.attrs['href'].strip()
-            SectionListParser('http://www.haodf.com' + href, proxies).run()
+            url = 'http://www.haodf.com' + href
+            SectionListParser(url, proxies).run()
 
         return True
 
