@@ -58,18 +58,18 @@ class Crawler:
         content = requests.get(url, headers=self.headers, proxies=self.proxies).text
 
         soup = BeautifulSoup(content, 'lxml')
-        results = soup.find_all("section", class_="tripdetails")
+        results = soup.find_all(class_="card-body")
 
         if len(results) == 0:
             return False
 
         for row in results:
             cruise = {}
-            cruise['title'] = row.find(class_="titledetails").get_text(strip=True)
-            cruise['ship_name'] = row.find(class_="shipname").find("strong").get_text(strip=True)
+            cruise['title'] = row.find(class_="card-title").get_text(strip=True)
+            cruise['ship_name'] = row.find(class_="detail-ship").find("strong").get_text(strip=True)
             duration_match = re.compile(r'^\d+').findall(cruise['title'])
             cruise['duration'] = 0 if len(duration_match) is 0 else duration_match[0]
-            cruise['departure_port'] = row.find(class_="ports").find("strong").get_text(strip=True)
+            cruise['departure_port'] = row.find(class_="detail-ports").find("strong").get_text(strip=True)
             cruise['itinerary_id'] = row.find(attrs={"name": "itineraryCode"}).get("value")
 
             detail_url = self.host + "/_/sailings?itineraryCode=" + cruise['itinerary_id']
@@ -80,7 +80,7 @@ class Crawler:
     def get_detail(self, url, cruise):
         content = requests.get(url, headers=self.headers, proxies=self.proxies).text
         soup = BeautifulSoup(content, 'lxml')
-        results = soup.find_all("ul", class_="resetgrid")
+        results = soup.find_all("ul", class_="body-data")
 
         data = []
         for row in results:
@@ -92,7 +92,7 @@ class Crawler:
             suite = match_price(row, "MINISUITE")
             haven = match_price(row, "HAVEN")
 
-            datetime = row.find(class_='datepriceselector ').get('data-value').split(',')
+            datetime = row.find(class_='datepriceselector').get('data-value').split(',')
             departure_time = int(time.mktime(time.strptime(datetime[0] + datetime[1], "%B %d %Y")))
             data.append("('ncl', '" + \
                         str(cruise['itinerary_id']) + \
