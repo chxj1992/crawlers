@@ -11,7 +11,7 @@ sys.setdefaultencoding('utf8')
 
 parser = DoctorListParser()
 
-cursor = db.query('SELECT * FROM doctors WHERE 1', [])
+cursor = db.query('SELECT * FROM doctors WHERE skills is NULL', [])
 while True:
     doctor = cursor.fetchone()
     if doctor is None:

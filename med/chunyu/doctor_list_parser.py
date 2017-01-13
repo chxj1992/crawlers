@@ -21,18 +21,14 @@ class DoctorListParser:
             print 'list ' + url + ' exists'
             return True
 
-        res = requests.get(url, headers=self.headers)
-        soup = BeautifulSoup(res.text, 'lxml')
+        content = requests.get(url, headers=self.headers).text
+        soup = BeautifulSoup(content, 'lxml')
 
         doctor_list = soup.select('.serach-left-list li')
 
-        if len(doctor_list) == 0:
-            if res.status_code == 200:
-                print 'list page is empty'
-                return False
-            else:
-                print 'status code : ' + str(res.status_code) + '. list page error!'
-                return True
+        if doctor_list is None:
+            print 'list page wrong'
+            return True
 
         sql = 'INSERT INTO doctors(`user_id`, `name`, `title`, `hospital`, `section`, `photo`) VALUES (%s, %s, %s, %s, %s, %s)'
 
@@ -47,10 +43,7 @@ class DoctorListParser:
             hospital = ','.join(map((lambda x: x.get_text()), p_list[1].find_all('a')))
             section = ','.join(map((lambda x: x.get_text()), p_list[2].find_all('a')))
 
-            try:
-                db.execute(sql, [user_id, name, title, hospital, section, photo])
-            except Exception:
-                continue
+            db.execute(sql, [user_id, name, title, hospital, section, photo])
 
         db.save_url(url)
         return True
@@ -63,13 +56,13 @@ class DoctorListParser:
             print 'detail ' + url + ' exists'
             return True
 
-        res = requests.get(url, headers=self.headers)
-        soup = BeautifulSoup(res.text, 'lxml')
+        content = requests.get(url, headers=self.headers).text
+        soup = BeautifulSoup(content, 'lxml')
 
         detail = soup.find('div', class_='doc-detail')
 
         if detail is None:
-            print 'status code : ' + str(res.status_code) + '. detail page error!'
+            print 'detail page wrong'
             return True
 
         intro_more = soup.select_one('.intro_more')

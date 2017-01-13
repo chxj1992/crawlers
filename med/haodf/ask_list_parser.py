@@ -30,7 +30,7 @@ class AskListParser:
         threads = []
 
         for i in range(1, ThreadNum + 1):
-            thread = MyThread(i, self, ThreadNum, 'get_list')
+            thread = MyThread(i, self, ThreadNum)
             threads.append(thread)
             thread.start()
         for thread in threads:
