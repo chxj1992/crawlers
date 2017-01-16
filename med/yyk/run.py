@@ -13,10 +13,11 @@ ThreadNum = 10
 
 threads = []
 
-for i in range(1, ThreadNum + 1):
-    parser = DoctorListParser()
-    thread = MyThread(i, parser, ThreadNum)
-    threads.append(thread)
-    thread.start()
-for thread in threads:
-    thread.join()
+while True:
+    for i in range(1, ThreadNum + 1):
+        parser = DoctorListParser()
+        thread = MyThread(i, parser, ThreadNum)
+        threads.append(thread)
+        thread.start()
+    for thread in threads:
+        thread.join()

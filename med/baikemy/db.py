@@ -37,6 +37,6 @@ def connect():
     return pymysql.connect(host='127.0.0.1',
                            user='root',
                            password='87822971',
-                           db='chunyu_doctor',
+                           db='baikemy_doctor',
                            charset='utf8mb4',
                            cursorclass=pymysql.cursors.DictCursor)

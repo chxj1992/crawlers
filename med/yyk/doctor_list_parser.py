@@ -63,7 +63,11 @@ class DoctorListParser:
             print 'detail ' + url + ' exists'
             return True
 
-        res = requests.get(url, headers=self.headers)
+        try:
+            res = requests.get(url, headers=self.headers)
+        except Exception:
+            return False
+
         soup = BeautifulSoup(res.text, 'lxml')
 
         detail = soup.find('div', class_='doc-detail')
@@ -73,12 +77,19 @@ class DoctorListParser:
             return True
 
         intro_more = soup.select_one('.intro_more')
+
         if intro_more is not None and re.compile(ur'擅长领域：(.*)').findall(intro_more.get_text()):
             skills = re.compile(ur'擅长领域：(.*)').findall(intro_more.get_text())[0]
-        else:
+        elif intro_more is not None and re.compile(ur'擅长领域：(\S+)').findall(detail.get_text()):
             skills = re.compile(ur'擅长领域：(\S+)').findall(detail.get_text())[0]
+        else:
+            skills = ''
 
-        experience = soup.find(class_='hos-guide-box1').get_text().strip()
+        experience = ''
+        if soup.find(class_='hos-guide-box1'):
+            experience = soup.find(class_='hos-guide-box1').get_text().strip()
+
+        print user_id
 
         sql = 'UPDATE doctors SET `skills`=%s, `experience`=%s WHERE `user_id`=%s'
 
