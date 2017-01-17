@@ -8,6 +8,8 @@ from bs4 import BeautifulSoup
 
 from med.chunyu import db
 
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class DoctorListParser:
     def __init__(self):
