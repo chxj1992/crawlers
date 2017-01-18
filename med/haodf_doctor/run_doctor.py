@@ -14,7 +14,7 @@ parser = DoctorListParser()
 
 ThreadNum = 10
 
-cursor = db.query('SELECT * FROM jibing WHERE  1', [])
+cursor = db.query('SELECT * FROM jibing WHERE  1 ORDER BY `id` ASC', [])
 
 while True:
     jibing = cursor.fetchone()
