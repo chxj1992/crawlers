@@ -24,7 +24,7 @@ while True:
     section_cursor = db.query('SELECT * FROM sections WHERE 1', [])
     while True:
         section = section_cursor.fetchone()
-        if hospital is None:
+        if section is None:
             break
 
         print 'hospital ' + hospital['name'] + ' id ' + hospital['key']
