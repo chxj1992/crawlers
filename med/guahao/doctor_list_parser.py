@@ -36,7 +36,7 @@ class DoctorListParser:
         res = requests.get(url, headers=self.headers)
         soup = BeautifulSoup(res.text, 'lxml')
 
-        if int(soup.select_one('.current').get_text()) != page:
+        if soup.select_one('.current') is None or int(soup.select_one('.current').get_text()) != page:
             print 'list page is empty'
             return False
 
